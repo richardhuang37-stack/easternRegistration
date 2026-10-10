@@ -20,11 +20,21 @@ class EasternSchedule {
   +queryCourseBySubject(subject: String): ArrayList<Course>
 }
 
+class MainMenu {
+  +displayCoursesBySubject(schedule: EasternSchedule, subject: String): void
+  +{static} main(args: String[]): void
+}
+
 record Course {
   -id : String
   -subject: String
   -courseNumber: String
   -meetingsFaculty: List<MeetingFaculty>
+  -courseTitle: String
+  -creditHours: String
+  -sequenceNumber: String
+  -creditHourLow: Double
+  -creditHourHigh: Double
 }
 
 record MeetingFaculty {
@@ -39,6 +49,8 @@ record MeetingTime {
   -friday: boolean
   -saturday: boolean
   -sunday: boolean
+  -beginTime: String
+  -endTime: String
 }
 
 record Term {
@@ -53,5 +65,7 @@ Course "1" 0-- "0*" MeetingFaculty: has a >
 'Dependencies
 EasternSchedule ..> Term : uses
 EasternSchedule ..> Course : uses
+MainMenu ..> EasternSchedule : queries
+MainMenu ..> Course : displays
 
 @enduml
