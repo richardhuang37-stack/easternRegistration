@@ -21,8 +21,45 @@ public class MainMenu {
         }
 
         ArrayList<Course> courses = schedule.queryCourseBySubject(subject.trim());
+        displayCourses(courses, "subject " + subject.trim());
+    }
+
+    /**
+     * Displays all sections of a course matching the requested subject and number.
+     *
+     * @param schedule the schedule to query
+     * @param subject the required course subject code
+     * @param courseNumber the required course number
+     * @throws Exception if the schedule cannot retrieve the courses
+     */
+    public void displayCoursesBySubjectAndNumber(
+        EasternSchedule schedule,
+        String subject,
+        String courseNumber
+    ) throws Exception {
+        if (subject == null || subject.isBlank()) {
+            throw new IllegalArgumentException("Subject must not be blank");
+        }
+        if (courseNumber == null || courseNumber.isBlank()) {
+            throw new IllegalArgumentException("Course number must not be blank");
+        }
+
+        String normalizedSubject = subject.trim();
+        String normalizedCourseNumber = courseNumber.trim();
+        ArrayList<Course> courses = new ArrayList<>();
+        for (Course course : schedule.queryCourseBySubject(normalizedSubject)) {
+            if (course.subject() != null && course.courseNumber() != null
+                && course.subject().equalsIgnoreCase(normalizedSubject)
+                && course.courseNumber().equalsIgnoreCase(normalizedCourseNumber)) {
+                courses.add(course);
+            }
+        }
+        displayCourses(courses, normalizedSubject + " " + normalizedCourseNumber);
+    }
+
+    private void displayCourses(ArrayList<Course> courses, String searchDescription) {
         if (courses.isEmpty()) {
-            System.out.println("No courses found for subject " + subject.trim() + ".");
+            System.out.println("No courses found for " + searchDescription + ".");
             return;
         }
 
@@ -94,9 +131,24 @@ public class MainMenu {
      */
     public static void main(String[] args) throws Exception {
         try (Scanner input = new Scanner(System.in)) {
-            System.out.print("Enter a subject code to list its courses: ");
-            String subject = input.nextLine();
-            new MainMenu().displayCoursesBySubject(new EasternSchedule(), subject);
+            MainMenu mainMenu = new MainMenu();
+            EasternSchedule schedule = new EasternSchedule();
+            System.out.println("1. Display all courses for a subject");
+            System.out.println("2. Display courses by subject and number");
+            System.out.print("Choose an option: ");
+            String option = input.nextLine().trim();
+            if ("1".equals(option)) {
+                System.out.print("Enter a subject code: ");
+                mainMenu.displayCoursesBySubject(schedule, input.nextLine());
+            } else if ("2".equals(option)) {
+                System.out.print("Enter a subject code: ");
+                String subject = input.nextLine();
+                System.out.print("Enter a course number: ");
+                String courseNumber = input.nextLine();
+                mainMenu.displayCoursesBySubjectAndNumber(schedule, subject, courseNumber);
+            } else {
+                throw new IllegalArgumentException("Choose 1 or 2");
+            }
         }
     }
 }

@@ -22,6 +22,7 @@ class EasternSchedule {
 
 class MainMenu {
   +displayCoursesBySubject(schedule: EasternSchedule, subject: String): void
+  +displayCoursesBySubjectAndNumber(schedule: EasternSchedule, subject: String, courseNumber: String): void
   +{static} main(args: String[]): void
 }
 
