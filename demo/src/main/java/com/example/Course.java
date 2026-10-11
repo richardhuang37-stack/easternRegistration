@@ -14,6 +14,10 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  * @param sequenceNumber the course section number
  * @param creditHourLow the minimum course credits
  * @param creditHourHigh the maximum course credits
+ * @param courseReferenceNumber the section's registration identifier
+ * @param maximumEnrollment the maximum section enrollment
+ * @param enrollment the current section enrollment
+ * @param seatsAvailable the currently available seats
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record Course(
@@ -25,11 +29,35 @@ public record Course(
     String creditHours,
     String sequenceNumber,
     Double creditHourLow,
-    Double creditHourHigh
+    Double creditHourHigh,
+    String courseReferenceNumber,
+    Integer maximumEnrollment,
+    Integer enrollment,
+    Integer seatsAvailable
 ) {
 
     public Course(String id, String subject, String courseNumber, List<MeetingFaculty> meetingsFaculty) {
-        this(id, subject, courseNumber, meetingsFaculty, null, null, null, null, null);
+        this(
+            id, subject, courseNumber, meetingsFaculty, null, null, null, null, null,
+            null, null, null, null
+        );
+    }
+
+    public Course(
+        String id,
+        String subject,
+        String courseNumber,
+        List<MeetingFaculty> meetingsFaculty,
+        String courseTitle,
+        String creditHours,
+        String sequenceNumber,
+        Double creditHourLow,
+        Double creditHourHigh
+    ) {
+        this(
+            id, subject, courseNumber, meetingsFaculty, courseTitle, creditHours,
+            sequenceNumber, creditHourLow, creditHourHigh, null, null, null, null
+        );
     }
 
     /**

@@ -23,6 +23,9 @@ class EasternSchedule {
 class MainMenu {
   +displayCoursesBySubject(schedule: EasternSchedule, subject: String): void
   +displayCoursesBySubjectAndNumber(schedule: EasternSchedule, subject: String, courseNumber: String): void
+  +displayStudentSchedule(student: Student): void
+  +addCourseToStudent(schedule: EasternSchedule, student: Student, subject: String, courseNumber: String, sectionChoice: int): boolean
+  +dropCourseFromStudent(student: Student, courseChoice: int): boolean
   +{static} main(args: String[]): void
 }
 
@@ -36,6 +39,10 @@ record Course {
   -sequenceNumber: String
   -creditHourLow: Double
   -creditHourHigh: Double
+  -courseReferenceNumber: String
+  -maximumEnrollment: Integer
+  -enrollment: Integer
+  -seatsAvailable: Integer
 }
 
 record MeetingFaculty {
@@ -59,14 +66,36 @@ record Term {
   -description: String
 }
 
+class Student {
+  {static} +MAX_CREDITS: int = 17
+  -id: String
+  -firstName: String
+  -lastName: String
+  -courses: ArrayList<Course>
+  --
+  +Student(id: String, firstName: String, lastName: String)
+  +getId(): String
+  +getFirstName(): String
+  +getLastName(): String
+  +getCourses(): List<Course>
+  +getTotalCredits(): double
+  +addCourse(course: Course): boolean
+  +addCourses(courses: Collection<Course>): boolean
+  +dropCourse(course: Course): boolean
+  +dropCourses(courses: Collection<Course>): int
+  +dropAllCourses(): void
+}
+
 'Aggregation and composition
 MeetingFaculty "1" o-- "1" MeetingTime : has a >
 Course "1" 0-- "0*" MeetingFaculty: has a >
+Student "1" o-- "0*" Course : registers for >
 
 'Dependencies
 EasternSchedule ..> Term : uses
 EasternSchedule ..> Course : uses
 MainMenu ..> EasternSchedule : queries
 MainMenu ..> Course : displays
+Student ..> Course : registers
 
 @enduml
