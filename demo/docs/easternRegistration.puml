@@ -27,6 +27,13 @@ class MainMenu {
   +addCourseToStudent(schedule: EasternSchedule, student: Student, subject: String, courseNumber: String, sectionChoice: int): boolean
   +dropCourseFromStudent(student: Student, courseChoice: int): boolean
   +{static} main(args: String[]): void
+  -displayCourses(courses: ArrayList<Course>, searchDescription: String): void
+  -displayCourse(course: Course): void
+  -courseSummary(course: Course): String
+  -{static} formatCreditRange(low: Double, high: Double): String
+  -{static} formatCredit(credits: Double): String
+  -{static} decodeHtmlEntities(text: String): String
+  -{static} coursesBySubjectAndNumber(schedule: EasternSchedule, subject: String, courseNumber: String): ArrayList<Course>
 }
 
 record Course {
@@ -43,10 +50,16 @@ record Course {
   -maximumEnrollment: Integer
   -enrollment: Integer
   -seatsAvailable: Integer
+  --
+  +Course(id: String, subject: String, courseNumber: String, meetingsFaculty: List<MeetingFaculty>)
+  +Course(id: String, subject: String, courseNumber: String, meetingsFaculty: List<MeetingFaculty>, courseTitle: String, creditHours: String, sequenceNumber: String, creditHourLow: Double, creditHourHigh: Double)
+  +toString(): String
 }
 
 record MeetingFaculty {
   -meetingTime: MeetingTime
+  --
+  +toString(): String
 }
 
 record MeetingTime {
@@ -59,6 +72,12 @@ record MeetingTime {
   -sunday: boolean
   -beginTime: String
   -endTime: String
+  --
+  +toString(): String
+  -{static} appendDay(days: StringBuilder, abbreviation: String, occurs: boolean): void
+  -{static} formatTimeRange(begin: String, end: String): String
+  -{static} periodOf(time: String): String
+  -{static} normalizeTime(time: String): String
 }
 
 record Term {
@@ -84,6 +103,16 @@ class Student {
   +dropCourse(course: Course): boolean
   +dropCourses(courses: Collection<Course>): int
   +dropAllCourses(): void
+  -{static} isFull(course: Course): boolean
+  -{static} containsCourse(existing: List<Course>, course: Course): boolean
+  -{static} sameCourse(first: Course, second: Course): boolean
+  -{static} notBlank(value: String): boolean
+  -{static} totalCredits(registeredCourses: List<Course>): double
+  -{static} courseCredits(course: Course): double
+  -{static} hasTimeConflict(first: Course, second: Course): boolean
+  -{static} meetingsConflict(first: MeetingTime, second: MeetingTime): boolean
+  -{static} shareDay(first: MeetingTime, second: MeetingTime): boolean
+  -{static} parseTime(value: String): LocalTime
 }
 
 'Aggregation and composition
@@ -96,6 +125,7 @@ EasternSchedule ..> Term : uses
 EasternSchedule ..> Course : uses
 MainMenu ..> EasternSchedule : queries
 MainMenu ..> Course : displays
+MainMenu ..> Student : manages registration
 Student ..> Course : registers
 
 @enduml
