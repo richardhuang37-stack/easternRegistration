@@ -4,9 +4,15 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
- * Provides the user-facing course search menu.
+ * Provides a console menu for searching courses and managing a student's schedule.
  */
 public class MainMenu {
+
+    /**
+     * Creates the course search and registration menu.
+     */
+    public MainMenu() {
+    }
 
     /**
      * Displays every course for the requested subject, including each meeting.
@@ -14,6 +20,7 @@ public class MainMenu {
      * @param schedule the schedule to query
      * @param subject the course subject code
      * @throws Exception if the schedule cannot retrieve the courses
+     * @throws IllegalArgumentException if {@code subject} is blank
      */
     public void displayCoursesBySubject(EasternSchedule schedule, String subject) throws Exception {
         if (subject == null || subject.isBlank()) {
@@ -25,12 +32,13 @@ public class MainMenu {
     }
 
     /**
-     * Displays all sections of a course matching the requested subject and number.
+     * Displays all sections and meetings matching the requested subject and course number.
      *
      * @param schedule the schedule to query
      * @param subject the required course subject code
      * @param courseNumber the required course number
      * @throws Exception if the schedule cannot retrieve the courses
+     * @throws IllegalArgumentException if the subject or course number is blank
      */
     public void displayCoursesBySubjectAndNumber(
         EasternSchedule schedule,
@@ -52,6 +60,12 @@ public class MainMenu {
         displayCourses(courses, normalizedSubject + " " + normalizedCourseNumber);
     }
 
+    /**
+     * Displays matching courses or a message when the search has no results.
+     *
+     * @param courses matching courses
+     * @param searchDescription description used in the empty-results message
+     */
     private void displayCourses(ArrayList<Course> courses, String searchDescription) {
         if (courses.isEmpty()) {
             System.out.println("No courses found for " + searchDescription + ".");
@@ -63,6 +77,11 @@ public class MainMenu {
         }
     }
 
+    /**
+     * Displays a course summary followed by each meeting.
+     *
+     * @param course the course to display
+     */
     private void displayCourse(Course course) {
         String details = courseSummary(course);
         if (course.meetingsFaculty() == null || course.meetingsFaculty().isEmpty()) {
@@ -77,6 +96,12 @@ public class MainMenu {
         }
     }
 
+    /**
+     * Builds the course label, credit value, and title.
+     *
+     * @param course the course to summarize
+     * @return a formatted summary of the course
+     */
     private String courseSummary(Course course) {
         String courseLabel = course.subject() + " " + course.courseNumber();
         if (course.sequenceNumber() != null && !course.sequenceNumber().isBlank()
@@ -98,7 +123,9 @@ public class MainMenu {
     }
 
     /**
-     * Displays the student's current registrations.
+     * Displays the student's current registrations and total credits.
+     *
+     * @param student the student whose schedule will be displayed
      */
     public void displayStudentSchedule(Student student) {
         System.out.println("Schedule for " + student.getFirstName() + " "
@@ -114,9 +141,16 @@ public class MainMenu {
     }
 
     /**
-     * Adds the selected 1-based result from a subject and course-number search.
+     * Adds the selected section from a subject and course-number search.
      *
-     * @return true if the course was registered
+     * @param schedule the schedule used to find matching sections
+     * @param student the student receiving the registration
+     * @param subject the required subject code
+     * @param courseNumber the required course number
+     * @param sectionChoice the 1-based position of the section in the search results
+     * @return {@code true} if the course was registered; {@code false} if Student rejected it
+     * @throws Exception if the schedule cannot retrieve courses
+     * @throws IllegalArgumentException if inputs are blank or the section choice is out of range
      */
     public boolean addCourseToStudent(
         EasternSchedule schedule,
@@ -150,9 +184,12 @@ public class MainMenu {
     }
 
     /**
-     * Drops a course from the student's displayed schedule using its 1-based position.
+     * Drops a course from the student's schedule using its 1-based position.
      *
-     * @return true if a registered course was dropped
+     * @param student the student whose course will be dropped
+     * @param courseChoice the 1-based position of the course in the student's schedule
+     * @return {@code true} if the course was dropped
+     * @throws IllegalArgumentException if the choice is outside the student's schedule
      */
     public boolean dropCourseFromStudent(Student student, int courseChoice) {
         if (courseChoice < 1 || courseChoice > student.getCourses().size()) {
@@ -166,6 +203,13 @@ public class MainMenu {
         return dropped;
     }
 
+    /**
+     * Formats a credit range, omitting redundant endpoints.
+     *
+     * @param low the minimum credits, or {@code null} if unavailable
+     * @param high the maximum credits, or {@code null} if unavailable
+     * @return a formatted credit value, or {@code null} if neither endpoint is available
+     */
     private static String formatCreditRange(Double low, Double high) {
         if (low == null && high == null) {
             return null;
@@ -179,12 +223,24 @@ public class MainMenu {
         return formatCredit(low) + "-" + formatCredit(high);
     }
 
+    /**
+     * Formats a credit amount without a trailing decimal for whole numbers.
+     *
+     * @param credits the credit amount
+     * @return the formatted credit amount
+     */
     private static String formatCredit(Double credits) {
         return credits == Math.rint(credits)
             ? Long.toString(credits.longValue())
             : credits.toString();
     }
 
+    /**
+     * Decodes the HTML entities used in course titles.
+     *
+     * @param text the encoded course title
+     * @return the title with supported entities decoded
+     */
     private static String decodeHtmlEntities(String text) {
         return text.replace("&amp;", "&")
             .replace("&quot;", "\"")
@@ -280,6 +336,16 @@ public class MainMenu {
         }
     }
 
+    /**
+     * Finds all sections matching a subject and course number.
+     *
+     * @param schedule the schedule to query
+     * @param subject the required subject code
+     * @param courseNumber the required course number
+     * @return matching sections
+     * @throws Exception if the schedule cannot retrieve courses
+     * @throws IllegalArgumentException if the subject or course number is blank
+     */
     private static ArrayList<Course> coursesBySubjectAndNumber(
         EasternSchedule schedule,
         String subject,
