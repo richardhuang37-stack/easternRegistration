@@ -27,10 +27,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class EasternSchedule {
 
     private static final String BASE = "https://reg-prod.ec.easternct.edu/StudentRegistrationSsb";
-    private String term;
+    private final String term;
 
-    CookieManager cookieManager;
-    HttpClient client;
+    private final CookieManager cookieManager;
+    private final HttpClient client;
 
 
     /**

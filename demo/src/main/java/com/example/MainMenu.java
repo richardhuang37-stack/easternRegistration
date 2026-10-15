@@ -295,20 +295,22 @@ public class MainMenu {
                         String subject = input.nextLine();
                         System.out.print("Enter a course number: ");
                         String courseNumber = input.nextLine();
-                        ArrayList<Course> matches = coursesBySubjectAndNumber(
+                        ArrayList<Course> matchingSections = coursesBySubjectAndNumber(
                             schedule, subject, courseNumber
                         );
-                        if (matches.isEmpty()) {
+                        if (matchingSections.isEmpty()) {
                             System.out.println("No matching course sections found.");
                             break;
                         }
-                        for (int index = 0; index < matches.size(); index++) {
-                            System.out.print((index + 1) + ". ");
-                            displayCourse(matches.get(index));
+                        for (int sectionIndex = 0; sectionIndex < matchingSections.size(); sectionIndex++) {
+                            System.out.print((sectionIndex + 1) + ". ");
+                            displayCourse(matchingSections.get(sectionIndex));
                         }
                         System.out.print("Choose a section: ");
-                        int choice = Integer.parseInt(input.nextLine().trim());
-                        addCourseToStudent(schedule, student, subject, courseNumber, choice);
+                        int selectedSection = Integer.parseInt(input.nextLine().trim());
+                        addCourseToStudent(
+                            schedule, student, subject, courseNumber, selectedSection
+                        );
                     }
                     case "4" -> {
                         if (student.getCourses().isEmpty()) {
@@ -317,9 +319,9 @@ public class MainMenu {
                         }
                         displayStudentSchedule(student);
                         System.out.print("Choose a course number to drop (0 to cancel): ");
-                        int choice = Integer.parseInt(input.nextLine().trim());
-                        if (choice != 0) {
-                            dropCourseFromStudent(student, choice);
+                        int selectedCourse = Integer.parseInt(input.nextLine().trim());
+                        if (selectedCourse != 0) {
+                            dropCourseFromStudent(student, selectedCourse);
                         }
                     }
                     case "5" -> {

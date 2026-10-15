@@ -4,9 +4,9 @@ hide circle
 
 class EasternSchedule {
   -{static} BASE: String = "https://reg-prod.ec.easternct.edu/StudentRegistrationSsb"
-  -term: String
-  ~cookieManager: CookieManager
-  ~client: HttpClient
+  -{final} term: String
+  -{final} cookieManager: CookieManager
+  -{final} client: HttpClient
   --
   +EasternSchedule()
   +getTerm(): String
