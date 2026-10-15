@@ -30,6 +30,7 @@ class MainMenu {
   -displayCourses(courses: ArrayList<Course>, searchDescription: String): void
   -displayCourse(course: Course): void
   -courseSummary(course: Course): String
+  -displayCoursesForDrop(student: Student): void
   -{static} formatCreditRange(low: Double, high: Double): String
   -{static} formatCredit(credits: Double): String
   -{static} decodeHtmlEntities(text: String): String

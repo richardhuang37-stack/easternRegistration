@@ -1,6 +1,7 @@
 package com.example;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -204,6 +205,18 @@ public class MainMenu {
     }
 
     /**
+     * Lists registered courses with the numbers used by the individual drop prompt.
+     *
+     * @param student the student whose courses will be listed
+     */
+    private void displayCoursesForDrop(Student student) {
+        List<Course> registeredCourses = student.getCourses();
+        for (int courseIndex = 0; courseIndex < registeredCourses.size(); courseIndex++) {
+            System.out.println((courseIndex + 1) + ". " + courseSummary(registeredCourses.get(courseIndex)));
+        }
+    }
+
+    /**
      * Formats a credit range, omitting redundant endpoints.
      *
      * @param low the minimum credits, or {@code null} if unavailable
@@ -313,12 +326,13 @@ public class MainMenu {
                         );
                     }
                     case "4" -> {
-                        if (student.getCourses().isEmpty()) {
+                        List<Course> registeredCourses = student.getCourses();
+                        if (registeredCourses.isEmpty()) {
                             System.out.println("No courses to drop.");
                             break;
                         }
-                        displayStudentSchedule(student);
-                        System.out.print("Choose a course number to drop (0 to cancel): ");
+                        displayCoursesForDrop(student);
+                        System.out.print("Choose a course to drop (0 to cancel): ");
                         int selectedCourse = Integer.parseInt(input.nextLine().trim());
                         if (selectedCourse != 0) {
                             dropCourseFromStudent(student, selectedCourse);
