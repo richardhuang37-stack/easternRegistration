@@ -26,7 +26,7 @@ class MainMenu {
   +displayStudentSchedule(student: Student): void
   +addCourseToStudent(schedule: EasternSchedule, student: Student, subject: String, courseNumber: String, sectionChoice: int): boolean
   +dropCourseFromStudent(student: Student, courseChoice: int): boolean
-  +{static} main(args: String[]): void
+  +open(): void
   -displayCourses(courses: ArrayList<Course>, searchDescription: String): void
   -displayCourse(course: Course): void
   -courseSummary(course: Course): String

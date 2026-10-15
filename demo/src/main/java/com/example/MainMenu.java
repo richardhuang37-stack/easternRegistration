@@ -251,14 +251,12 @@ public class MainMenu {
     }
 
     /**
-     * Starts the menu and prompts for course searches and student registration actions.
+     * Opens the interactive menu for course searches and student registration.
      *
-     * @param args not used
-     * @throws Exception if the schedule cannot retrieve the courses
+     * @throws Exception if the schedule cannot retrieve courses
      */
-    public static void main(String[] args) throws Exception {
+    public void open() throws Exception {
         try (Scanner input = new Scanner(System.in)) {
-            MainMenu mainMenu = new MainMenu();
             EasternSchedule schedule = new EasternSchedule();
             System.out.print("Enter student ID: ");
             String id = input.nextLine();
@@ -283,14 +281,14 @@ public class MainMenu {
                 switch (option) {
                     case "1" -> {
                         System.out.print("Enter a subject code: ");
-                        mainMenu.displayCoursesBySubject(schedule, input.nextLine());
+                        displayCoursesBySubject(schedule, input.nextLine());
                     }
                     case "2" -> {
                         System.out.print("Enter a subject code: ");
                         String subject = input.nextLine();
                         System.out.print("Enter a course number: ");
                         String courseNumber = input.nextLine();
-                        mainMenu.displayCoursesBySubjectAndNumber(schedule, subject, courseNumber);
+                        displayCoursesBySubjectAndNumber(schedule, subject, courseNumber);
                     }
                     case "3" -> {
                         System.out.print("Enter a subject code: ");
@@ -306,29 +304,29 @@ public class MainMenu {
                         }
                         for (int index = 0; index < matches.size(); index++) {
                             System.out.print((index + 1) + ". ");
-                            mainMenu.displayCourse(matches.get(index));
+                            displayCourse(matches.get(index));
                         }
                         System.out.print("Choose a section: ");
                         int choice = Integer.parseInt(input.nextLine().trim());
-                        mainMenu.addCourseToStudent(schedule, student, subject, courseNumber, choice);
+                        addCourseToStudent(schedule, student, subject, courseNumber, choice);
                     }
                     case "4" -> {
                         if (student.getCourses().isEmpty()) {
                             System.out.println("No courses to drop.");
                             break;
                         }
-                        mainMenu.displayStudentSchedule(student);
+                        displayStudentSchedule(student);
                         System.out.print("Choose a course number to drop (0 to cancel): ");
                         int choice = Integer.parseInt(input.nextLine().trim());
                         if (choice != 0) {
-                            mainMenu.dropCourseFromStudent(student, choice);
+                            dropCourseFromStudent(student, choice);
                         }
                     }
                     case "5" -> {
                         student.dropAllCourses();
                         System.out.println("All courses dropped.");
                     }
-                    case "6" -> mainMenu.displayStudentSchedule(student);
+                    case "6" -> displayStudentSchedule(student);
                     case "0" -> running = false;
                     default -> System.out.println("Choose a valid menu option.");
                 }
